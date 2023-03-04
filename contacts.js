@@ -9,14 +9,24 @@ const contactsPath = path.join(
 );
 
 async function listContacts() {
-  const contacts = await fs.readFile(contactsPath);
+  const contacts = await fs.readFile(contactsPath, "utf-8");
+
   const result = JSON.parse(contacts);
   return result;
 }
 
 async function getContactById(contactId) {
   const allContacts = await listContacts();
-  const contactById = allContacts.find((contact) => contact.id === contactId);
+
+  const id = String(contactId);
+  const contactById = allContacts.filter((contact) => {
+    contact.id === contactId;
+    console.log(contact.id === id);
+  });
+  // const contactById = allContacts.find((contact) => {
+  //   contact.id === id;
+  //   console.log(contact.id === id);
+  // });
   if (!contactById) {
     return null;
   }
@@ -24,18 +34,20 @@ async function getContactById(contactId) {
 }
 
 async function removeContact(contactId) {
-  const allContact = await listContacts();
+  const allContacts = await listContacts();
 
-  const indexContact = allContact.findIndex(
-    (contact) => contact.id === contactId
-  );
+  const indexContact = allContacts.findIndex((contact) => {
+    contact.id === contactId;
+
+    console.log(`${contact.id} === ${contactId}`, contact.id == contactId);
+  });
   if (indexContact === -1) {
     console.log("Contact to delete not found");
     return;
   }
-  const removeContact = allContact.splice(indexContact, 1);
+  const removeContact = allContacts.splice(indexContact, 1);
 
-  fs.writeFile(contactsPath, JSON.stringify(allContact));
+  await fs.writeFile(contactsPath, JSON.stringify(allContacts));
 
   return removeContact;
 }

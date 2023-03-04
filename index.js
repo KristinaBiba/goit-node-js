@@ -4,21 +4,18 @@ const path = require("path");
 
 const contactsAction = require("./contacts");
 
-const newContact = {
-  name: "Olga",
-  email: "olga@gmail.com",
-  phone: "0506300365",
-};
-
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
       const listContacts = await contactsAction.listContacts();
-      console.log(listContacts);
+      console.table(listContacts);
       break;
 
     case "get":
       const contactById = await contactsAction.getContactById(id);
+      if (!contactById) {
+        throw new Error(`Contact with id=${id} not found`);
+      }
       console.log(contactById);
       break;
 
@@ -28,8 +25,8 @@ async function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "remove":
-      const removeContac = await contactsAction.removeContact(id);
-      console.log(removeContac);
+      const removeContact = await contactsAction.removeContact(id);
+      console.log(removeContact);
       break;
 
     default:
